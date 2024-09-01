@@ -18,11 +18,11 @@
 
 ## Overview
 
-This project implements a SkipList data structure in C++. SkipLists are a type of data structure that allow fast search, insertion, and deletion operations within an ordered sequence of elements, using a hierarchy of linked lists. This implementation makes use of smart pointers (`std::unique_ptr`) for automatic memory management, ensuring safe and efficient resource handling.
+This is a SkipList data structure in C++. SkipLists are a type of data structure that allow fast search, insertion, and deletion operations within an ordered sequence of elements, using a hierarchy of linked lists. This script makes use of smart pointers (`std::unique_ptr`) for automatic memory management, ensuring safe and efficient resource handling.
 
 ## Features
 
-- **Smart Pointers:** The implementation uses `std::unique_ptr` for all dynamic memory management, making the code more robust by avoiding manual memory management and potential memory leaks.
+- **Smart Pointers:** `std::unique_ptr` for all dynamic memory management, making the code more robust by avoiding manual memory management and potential memory leaks.
 - **Randomized Levels:** The SkipList is built using a randomized level structure, which offers an average time complexity of O(log n) for search, insertion, and deletion operations.
 - **Automatic Level Management:** The SkipList automatically adjusts its level as new elements are added.
 
