@@ -1,126 +1,126 @@
-
-# My Final SkipList Implementation in C++
-
-This repository contains an implementation of a SkipList, a probabilistic data structure that allows fast search, insertion, and deletion operations. This implementation is written in C++ and is designed to be simple yet efficient.
+# SkipList Implementation
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [Key Features](#key-features)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Compiling the Code](#compiling-the-code)
-  - [Running the Program](#running-the-program)
-- [Code Structure](#code-structure)
+- [Features](#features)
+- [Class Structure](#class-structure)
+  - [Node Class](#node-class)
+  - [SkipList Class](#skiplist-class)
+- [Key Functions](#key-functions)
+  - [insertElement(int key)](#insertelementint-key)
+  - [searchElement(int key) const](#searchelementint-key-const)
+  - [deleteElement(int key)](#deleteelementint-key)
+  - [displayList() const](#displaylist-const)
 - [Usage](#usage)
-  - [Inserting Elements](#inserting-elements)
-  - [Searching Elements](#searching-elements)
-  - [Deleting Elements](#deleting-elements)
-  - [Displaying the SkipList](#displaying-the-skiplist)
-- [Technical Details](#technical-details)
-- [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
+- [How It Works](#how-it-works)
 - [License](#license)
 
 ## Overview
 
-SkipList is a dynamic data structure that allows efficient search, insertion, and deletion operations. It uses multiple levels of linked lists to achieve average-case time complexity similar to balanced trees, but with simpler implementation.
+This project implements a SkipList data structure in C++. SkipLists are a type of data structure that allow fast search, insertion, and deletion operations within an ordered sequence of elements, using a hierarchy of linked lists. This implementation makes use of smart pointers (`std::unique_ptr`) for automatic memory management, ensuring safe and efficient resource handling.
 
-## Key Features
+## Features
 
-- **Fast Operations:** SkipList provides O(log n) average time complexity for search, insertion, and deletion operations.
-- **Randomized Level Assignment:** The level of each node is determined randomly, ensuring probabilistic balancing.
-- **Simple Implementation:** The code is designed to be easy to understand and modify.
+- **Smart Pointers:** The implementation uses `std::unique_ptr` for all dynamic memory management, making the code more robust by avoiding manual memory management and potential memory leaks.
+- **Randomized Levels:** The SkipList is built using a randomized level structure, which offers an average time complexity of O(log n) for search, insertion, and deletion operations.
+- **Automatic Level Management:** The SkipList automatically adjusts its level as new elements are added.
 
-## Getting Started
+## Class Structure
 
-### Prerequisites
-
-To compile and run this SkipList implementation, you need:
-
-- A C++ compiler (GCC, Clang, or MSVC)
-- A terminal or command prompt
-
-### Compiling the Code
-
-To compile the code, navigate to the directory containing the source file and run:
-
-```sh
-g++ -o skiplist main.cpp
-```
-
-Replace `main.cpp` with the name of your source file if it differs.
-
-### Running the Program
-
-After compiling, run the executable:
+### Node Class
 
 ```
-./skiplist
+class Node {
+public:
+    int key;
+    std::unique_ptr<std::unique_ptr<Node>[]> forward;
+
+    explicit Node(int key, int level);
+};
 ```
 
-This will execute the program and showcase the basic operations of the SkipList.
+- **`key`:** Stores the key value of the node.
+- **`forward`:** An array of smart pointers pointing to the next nodes at various levels.
 
-## Code Structure
+### SkipList Class
 
-The implementation consists of the following classes:
+```
+class SkipList {
+    int maxLevel;
+    int level;
+    std::unique_ptr<Node> header;
 
-- **Node:** Represents a node in the SkipList. Each node contains a key and an array of pointers (`forward`) to other nodes at different levels.
-- **SkipList:** Manages the overall structure of the SkipList. It includes methods for insertion, searching, deletion, and displaying the list.
+public:
+    explicit SkipList(int maxLevel);
+    int randomLevel() const;
+    std::unique_ptr<Node> createNode(int key, int level);
+    void insertElement(int key);
+    bool searchElement(int key) const;
+    void deleteElement(int key);
+    void displayList() const;
+};
+```
+
+- **`maxLevel`:** The maximum level a node can have.
+- **`level`:** The current level of the SkipList.
+- **`header`:** A header node to represent the start of the SkipList.
+
+## Key Functions
+
+### `insertElement(int key)`
+Inserts a new key into the SkipList.
+
+### `searchElement(int key) const`
+Searches for a key in the SkipList. Returns `true` if the key is found, otherwise `false`.
+
+### `deleteElement(int key)`
+Deletes a key from the SkipList.
+
+### `displayList() const`
+Displays the entire SkipList, showing the elements at each level.
 
 ## Usage
 
-### Inserting Elements
+Here is a simple example of how to use the SkipList:
 
-To insert an element into the SkipList, use the `insertElement(int key)` method. This method randomly assigns a level to the new node and inserts it at the appropriate positions in the SkipList.
-
-Example:
 ```
-lst.insertElement(3);
-```
+int main() {
+    SkipList lst(10);
 
-### Searching Elements
+    lst.insertElement(3);
+    lst.insertElement(6);
+    lst.insertElement(7);
+    lst.insertElement(9);
+    lst.insertElement(12);
+    lst.insertElement(19);
+    lst.insertElement(17);
 
-To search for an element, use the `searchElement(int key)` method. This method traverses the SkipList to find the node with the specified key.
+    lst.displayList();
+    lst.searchElement(6);
+    lst.deleteElement(6);
+    lst.displayList();
 
-Example:
-```
-bool found = lst.searchElement(6);
-```
-
-### Deleting Elements
-
-To delete an element from the SkipList, use the `deleteElement(int key)` method. This method removes the node with the specified key from the list.
-
-Example:
-```
-lst.deleteElement(6);
+    return 0;
+}
 ```
 
-### Displaying the SkipList
+This example demonstrates inserting elements into the SkipList, searching for an element, deleting an element, and displaying the SkipList at different stages.
 
-To display the current state of the SkipList, use the `displayList()` method. This method prints the keys in the SkipList, level by level.
+## How It Works
 
-Example:
-```
-lst.displayList();
-```
+1. **Random Level Generation:** The `randomLevel()` function generates a level for a new node using a random number generator, where each level has a 50% chance of being incremented.
+  
+2. **Insertion:** The `insertElement()` method inserts the new node at the appropriate position in the SkipList. If the generated level is higher than the current level of the SkipList, the level of the SkipList is updated.
 
-## Technical Details
+3. **Search:** The `searchElement()` method navigates through the levels starting from the highest and progressively moving down to locate the key.
 
-- **Random Level Generation:** The level for each new node is generated using a random number generator. The level is incremented as long as a random binary number is 1 and the maximum level is not exceeded.
-- **Memory Management:** The SkipList class manages dynamic memory allocation for nodes and ensures proper cleanup in the destructor to avoid memory leaks.
-
-## Future Enhancements
-
-- **Custom Comparator:** Allow customization of the comparison function for ordering elements.
-- **Concurrency Support:** Implement thread-safe operations to allow concurrent access to the SkipList.
-- **Persistent Storage:** Add support for persistent storage, enabling the SkipList to be saved and loaded from disk.
-
-## Contributing
-
-Contributions are welcome! Please fork this repository, create a new branch, and submit a pull request with your changes. Ensure that your code is well-documented and follows the existing style.
+4. **Deletion:** The `deleteElement()` method removes the specified key from the SkipList and adjusts the pointers accordingly.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+Feel free to contribute to this project by submitting issues or pull requests!
